@@ -44,9 +44,9 @@ public class Login extends HttpServlet {
 		try {
 			Class.forName(DB_DRIVER);
 			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-			String sql="select password from users where user_id=?";
+			String sql="select password from users where user_name=?";
 			prepstmt=conn.prepareStatement(sql);
-			prepstmt.setInt(1, user.getId());
+			prepstmt.setString(1, user.getUsername());
 			ResultSet result=prepstmt.executeQuery();
 			String password_in_database=null;
 			while(result.next()) {
@@ -81,10 +81,11 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setCharacterEncoding("GB2312");
 		response.setContentType("text/html");
-		String id=request.getParameter("id");
+		String username=request.getParameter("name");
 		String password=request.getParameter("password");
 		Users user=new Users();
-		user.setId(Integer.parseInt(id));
+		System.out.println(password);
+		user.setUsername(username);
 		user.setPassword(password);
 		int result=0;
 		try {
