@@ -7,16 +7,17 @@ public class Users {
 	private String phonenumber;
 	private String address;
 	private String profilePath;
+	private String email;
 	
 	public Users() {}
 	
 	
-	public Users(int _id, String _username, String _password, String _phonenumber) {
-		this.id=_id;
-		this.username=_username;
-		this.password=_password;
-		this.phonenumber=_phonenumber;
-	}
+//	public Users(int _id, String _username, String _password, String _phonenumber, String ) {
+//		this.id=_id;
+//		this.username=_username;
+//		this.password=_password;
+//		this.phonenumber=_phonenumber;
+//	}
 	
 	public int getId() {
 		return id;
@@ -58,5 +59,11 @@ public class Users {
 	}
 	public void setProfilePath(String _profilePath) {
 		this.profilePath=_profilePath;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String _email) {
+		this.email=_email;
 	}
 }
