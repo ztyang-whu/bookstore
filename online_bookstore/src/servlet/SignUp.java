@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import dao.UserDao;
 /**
  * Servlet implementation class JsonTest
  */
@@ -29,92 +31,6 @@ public class SignUp extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-    
-    private int insert(Users user) throws SQLException{
-    	Connection conn=null;
-
-		PreparedStatement prepstmt=null;
-		
-		final String DB_DRIVER="com.mysql.jdbc.Driver";
-		final String DB_URL=
-				"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
-		final String DB_USER="root";
-		final String DB_PASSWARD="123456";
-		
-		try {
-			Class.forName(DB_DRIVER);
-			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-			String sql="INSERT INTO `bookstore`.`users` (`user_name`, `password`, `phone_num`) VALUES (?, ?, ?); ";
-			prepstmt=conn.prepareStatement(sql);
-			prepstmt.setString(1, user.getUsername());
-			prepstmt.setString(2, user.getPassword());
-			prepstmt.setString(3, user.getEmail());
-			prepstmt.executeUpdate();
-		}catch(Exception e) {
-			e.printStackTrace();
-			return -1;							//插入失败
-		}finally {
-			if(conn!=null) {
-				try {
-					conn.close();
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return 1;								//插入成功
-    }
-    
-    private int check(Users user) throws SQLException{
-    	Connection conn=null;
-
-		PreparedStatement prepstmt=null;
-		
-		final String DB_DRIVER="com.mysql.jdbc.Driver";
-		final String DB_URL=
-				"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
-		final String DB_USER="root";
-		final String DB_PASSWARD="123456";
-		
-		try {
-			Class.forName(DB_DRIVER);
-			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-			String sql="select user_name, email from users where user_name=?";
-			prepstmt=conn.prepareStatement(sql);
-			prepstmt.setString(1, user.getUsername());
-			ResultSet result=prepstmt.executeQuery();
-			String username=null;
-			String email=null;
-			while(result.next()) {
-				username=result.getString(1);
-				email=result.getString(2);
-			}
-			if(username!=null) {
-				return -1;						//用户名已存在
-			}
-			if(email!=null&&email.equals(user.getEmail())) {
-				return -2;						//该邮箱已经被注册
-			}else {
-				if(insert(user)==1)
-					return 1;					//注册成功
-				else {
-					return -3;					//注册失败
-				}
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(conn!=null) {
-				try {
-					conn.close();
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return -4;								//出现意外
-	}
-    
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -140,7 +56,8 @@ public class SignUp extends HttpServlet {
 		user.setEmail(email);
 		int result=0;
 		try {
-			result=check(user);
+			UserDao userDao=new UserDao();
+			result=userDao.signup_check(user);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

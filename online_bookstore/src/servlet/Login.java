@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import dao.UserDao;
 /**
  * Servlet implementation class JsonTest
  */
@@ -30,50 +32,6 @@ public class Login extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
     
-    public int check(Users user) throws SQLException{
-    	Connection conn=null;
-
-		PreparedStatement prepstmt=null;
-		
-		final String DB_DRIVER="com.mysql.jdbc.Driver";
-		final String DB_URL=
-				"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
-		final String DB_USER="root";
-		final String DB_PASSWARD="123456";
-		
-		try {
-			Class.forName(DB_DRIVER);
-			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-			String sql="select password from users where user_name=?";
-			prepstmt=conn.prepareStatement(sql);
-			prepstmt.setString(1, user.getUsername());
-			ResultSet result=prepstmt.executeQuery();
-			String password_in_database=null;
-			while(result.next()) {
-				password_in_database=result.getString(1);
-			}
-			if(password_in_database==null) {
-				return -1;						//password为空说明没有这个id，用户不存在
-			}else if(!password_in_database.equals(user.getPassword())) {
-				return -2;						//密码不正确
-			}else {
-				return 1;						//用户存在且密码正确
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(conn!=null) {
-				try {
-					conn.close();
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return -3;								//出现意外
-	}
-    
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -88,7 +46,8 @@ public class Login extends HttpServlet {
 		user.setPassword(password);
 		int result=0;
 		try {
-			result=check(user);
+			UserDao userDao=new UserDao();
+			result=userDao.login_check(user);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
