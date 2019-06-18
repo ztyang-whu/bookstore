@@ -14,8 +14,10 @@ public class UserDao {
 	PreparedStatement prepstmt=null;
 	
 	final String DB_DRIVER="com.mysql.jdbc.Driver";
+//	final String DB_URL=
+//			"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
 	final String DB_URL=
-			"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
+			"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&characterEncoding=utf8&useSSL=true";
 	final String DB_USER="root";
 	final String DB_PASSWARD="123456";
 	
@@ -146,7 +148,7 @@ public class UserDao {
 		 try {
 			 Class.forName(DB_DRIVER);
 			 conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-			 String sql="UPDATE `bookstore`.`users` SET  `phone_number`=?,  `address` = ?, `profile_path` = ?,  WHERE (`user_name` = ?);";
+			 String sql="UPDATE `bookstore`.`users` SET  `phone_num`=?,  `address` = ?, `profile_path` = ?  WHERE (`user_name` = ?);";
 			 prepstmt=conn.prepareStatement(sql);
 			 prepstmt.setString(1, user.getPhonenumber());
 			 prepstmt.setString(2, user.getAddress());

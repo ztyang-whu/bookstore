@@ -4,8 +4,13 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.json.JSONObject;
 
-import java.io.File;
+import bean.Users;
+import dao.UserDao;
+import load.Upload;
+
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -22,57 +27,67 @@ import java.util.List;
 @WebServlet("/updateinfo")
 public class UpdateInfo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public UpdateInfo() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public UpdateInfo() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doPost(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		Boolean isMultipart=ServletFileUpload.isMultipartContent(request);
-		if(!isMultipart) {
-			return;
-		}
-		
-		try {
-			FileItemFactory factory=new DiskFileItemFactory();
-			ServletFileUpload upload=new ServletFileUpload(factory);
-			List<FileItem> items=upload.parseRequest(request);
-			String username=null;
-			FileItem profile=null;
-			for(FileItem item:items) {
-				String fileName=item.getFieldName();
-				if(item.isFormField()) {
-					String value=item.getString("GB2312");
-					if(fileName.equals("username")) {
-						username=value;
-					}
-				}else {
-					profile=item;
+		int result = 0;
+		Boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (!isMultipart) {
+			result=-1;								//非二进制流
+		} else {
+			try {
+				FileItemFactory factory = new DiskFileItemFactory();
+				ServletFileUpload upload = new ServletFileUpload(factory);
+				List<FileItem> items = upload.parseRequest(request);
+				Users user=new Users();
+				Upload upload2 = new Upload();
+				result = upload2.upload(items, user);
+				
+				if (result == 1) {
+					UserDao userDao=new UserDao();
+					userDao.update_info(user);
+					result=1;						//更新信息成功
+				} else {
+					result=-2;						//上传图片失败
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				result=-3;							//更新失败
 			}
-			System.out.println(username);
-			if(username==null||profile==null) {
-				return;
-			}else {
-				profile.write(new File("/home/yzt", username+".png"));
-			}
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html");
+		try {
+			DataOutputStream output=new DataOutputStream(response.getOutputStream());
+			String jsonresult="";
+			JSONObject jsonObj=new JSONObject();
+			jsonObj.put("result", result);
+			jsonresult=jsonObj.toString();
+			output.writeUTF(jsonresult);
+			output.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
