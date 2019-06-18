@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import servlet.Users;
+import bean.Users;
 
 public class UserDao {
 	Connection conn=null;
@@ -112,20 +112,11 @@ public class UserDao {
 	 * @throws SQLException
 	 */
 	 private int insert(Users user) throws SQLException{
-	    	Connection conn=null;
-
-			PreparedStatement prepstmt=null;
-			
-			final String DB_DRIVER="com.mysql.jdbc.Driver";
-			final String DB_URL=
-					"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
-			final String DB_USER="root";
-			final String DB_PASSWARD="123456";
 			
 			try {
 				Class.forName(DB_DRIVER);
 				conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
-				String sql="INSERT INTO `bookstore`.`users` (`user_name`, `password`, `phone_num`) VALUES (?, ?, ?); ";
+				String sql="INSERT INTO `bookstore`.`users` (`user_name`, `password`, `email`) VALUES (?, ?, ?); ";
 				prepstmt=conn.prepareStatement(sql);
 				prepstmt.setString(1, user.getUsername());
 				prepstmt.setString(2, user.getPassword());
@@ -145,4 +136,36 @@ public class UserDao {
 			}
 			return 1;								//插入成功
 	    }
+	 /**
+	  * 用户更新信息
+	  * @param user
+	  * @return
+	  * @throws SQLException
+	  */
+	 public int update_info(Users user) throws SQLException{
+		 try {
+			 Class.forName(DB_DRIVER);
+			 conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
+			 String sql="UPDATE `bookstore`.`users` SET  `phone_number`=?,  `address` = ?, `profile_path` = ?,  WHERE (`user_name` = ?);";
+			 prepstmt=conn.prepareStatement(sql);
+			 prepstmt.setString(1, user.getPhonenumber());
+			 prepstmt.setString(2, user.getAddress());
+			 prepstmt.setString(3, user.getProfilePath());
+			 prepstmt.setString(4, user.getUsername());
+			 prepstmt.executeUpdate();
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 return -1;								//更新信息失败
+		 }finally {
+			 if(conn!=null) {
+				 try {
+					 conn.close();
+				 }catch (Exception e) {
+					// TODO: handle exception
+					 e.printStackTrace();
+				}
+			 }
+		 }
+		 return 1;									//更新信息成功
+	 }
 }

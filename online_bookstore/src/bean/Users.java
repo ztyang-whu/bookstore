@@ -1,4 +1,4 @@
-package servlet;
+package bean;
 
 public class Users {
 	private int id;

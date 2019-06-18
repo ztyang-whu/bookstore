@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import bean.Users;
 import dao.UserDao;
 /**
  * Servlet implementation class JsonTest
