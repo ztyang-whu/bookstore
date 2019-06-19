@@ -29,7 +29,7 @@ public class Book {
 	public void setBook_author(String book_author) {
 		this.book_author=book_author;
 	}
-	public String book_photo_path() {
+	public String getBook_photo_path() {
 		return this.book_photo_path;
 	}
 	public void setBook_photo_path(String book_photo_path) {

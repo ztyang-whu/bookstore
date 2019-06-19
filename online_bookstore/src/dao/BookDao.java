@@ -137,4 +137,33 @@ public class BookDao {
 		}
 		return books;
 	}
+	public int addbook(Book book) throws Exception{
+		try {
+			Class.forName(DB_DRIVER);
+			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
+			String sql="INSERT INTO `bookstore`.`books` (`book_name`, `book_author`, "
+					+ "`book_photo_path`, `book_stock`, `book_price`) VALUES (?, ?, ?, ?, ?);";
+			prepstmt=conn.prepareStatement(sql);
+			prepstmt.setString(1, book.getBook_name());
+			prepstmt.setString(2, book.getBook_author());
+			prepstmt.setString(3, book.getBook_photo_path());
+			prepstmt.setInt(4, book.getBook_stock());
+			prepstmt.setString(5, book.getBook_price());
+			prepstmt.executeUpdate();
+			return 1;							//插入成功
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			if(conn!=null) {
+				try {
+					conn.close();
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return -1;				//插入失败
+	}
 }
