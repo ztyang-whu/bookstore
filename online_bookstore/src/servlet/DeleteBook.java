@@ -2,35 +2,28 @@ package servlet;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
 
 import bean.Book;
 import dao.BookDao;
-import load.Upload;
 
 /**
- * Servlet implementation class AddBook
+ * Servlet implementation class DeleteBook
  */
-@WebServlet("/addbook")
-public class AddBook extends HttpServlet {
+@WebServlet("/deletebook")
+public class DeleteBook extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddBook() {
+    public DeleteBook() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -51,29 +44,16 @@ public class AddBook extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 		request.setCharacterEncoding("UTF-8");
-		int result = 0;
-		Boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		if (!isMultipart) {
-			result=-1;								//非二进制流
-		} else {
-			try {
-				FileItemFactory factory = new DiskFileItemFactory();
-				ServletFileUpload upload = new ServletFileUpload(factory);
-				List<FileItem> items = upload.parseRequest(request);
-				Book book=new Book();
-				Upload upload2 = new Upload();
-				result = upload2.upload_book(items, book);
-				
-				if (result == 1) {
-					BookDao bookDao=new BookDao();
-					result=bookDao.addbook(book);
-				} else {
-					result=-2;						//上传图片失败
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				result=-3;							//更新失败
-			}
+		int result=0;
+		String book_id=request.getParameter("book_id");
+		Book book=new Book();
+		book.setBook_id(Integer.parseInt(book_id));
+		BookDao bookDao=new BookDao();
+		try{
+			result=bookDao.deletebook(book);
+		}catch (Exception e) {
+			// TODO: handle exception
+			result=-1;				//失败
 		}
 		try {
 			DataOutputStream output=new DataOutputStream(response.getOutputStream());

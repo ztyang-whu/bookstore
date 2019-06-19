@@ -137,6 +137,12 @@ public class BookDao {
 		}
 		return books;
 	}
+	/**
+	 * 添加书籍
+	 * @param book
+	 * @return
+	 * @throws Exception
+	 */
 	public int addbook(Book book) throws Exception{
 		try {
 			Class.forName(DB_DRIVER);
@@ -165,5 +171,35 @@ public class BookDao {
 			}
 		}
 		return -1;				//插入失败
+	}
+	/**
+	 * 删除某本书
+	 * @param book
+	 * @return
+	 * @throws Exception
+	 */
+	public int deletebook(Book book) throws Exception{
+		try {
+			Class.forName(DB_DRIVER);
+			conn=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWARD);
+			String sql="DELETE FROM `books` WHERE (`book_id` = ?)";
+			prepstmt=conn.prepareStatement(sql);
+			prepstmt.setInt(1, book.getBook_id());
+			prepstmt.executeUpdate();
+			return 1;						//删除成功
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			if(conn!=null) {
+				try {
+					conn.close();
+				}catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+			}
+		}
+		return -1;							//删除失败
 	}
 }
