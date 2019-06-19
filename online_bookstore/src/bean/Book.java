@@ -13,8 +13,8 @@ public class Book {
 	public int getBook_id() {
 		return this.book_id;
 	}
-	public void setBook_id(String book_name) {
-		this.book_name=book_name;
+	public void setBook_id(int book_name) {
+		this.book_id=book_name;
 	}
 	
 	public String getBook_name() {

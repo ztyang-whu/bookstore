@@ -14,8 +14,7 @@ public class UserDao {
 	PreparedStatement prepstmt=null;
 	
 	final String DB_DRIVER="com.mysql.jdbc.Driver";
-//	final String DB_URL=
-//			"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&useUnicode=true&useSSL=true";
+
 	final String DB_URL=
 			"jdbc:mysql://localhost:3306/bookstore?autoReconnect=true&characterEncoding=utf8&useSSL=true";
 	final String DB_USER="root";
