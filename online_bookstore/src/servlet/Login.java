@@ -2,10 +2,6 @@ package servlet;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -39,7 +35,7 @@ public class Login extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html");
+		response.setContentType("application/json");
 		String username=request.getParameter("name");
 		String password=request.getParameter("password");
 		Users user=new Users();
